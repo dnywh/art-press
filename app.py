@@ -1,8 +1,8 @@
 import requests
 import math
 
-itemsPerPage = 10
-limit = 90
+# itemsPerPage = 10
+limit = 3  # Breaks if over 100
 
 fields = "id,image_id,title,artist_id,medium_display"
 url = f"https://api.artic.edu/api/v1/artworks/search?limit={limit}&fields={fields}"
@@ -32,6 +32,7 @@ searchQuery = {
 
 # term_titles: "woodcut"
 # classification_titles: "etching"
+# foul-biting
 
 # searchQuery = {
 #     "query": {
@@ -80,8 +81,14 @@ art = r.json()
 resultSize = art["pagination"]["total"]
 pages = int(math.ceil(resultSize / 10))
 
-imageParams = "/full/843,/0/default.jpg"
-print("Total results:", resultSize, "Limited to:", len(art["data"]))
+size = 360
+# imageParams = "/full/843,/0/default.jpg"
+imageParams = f"/square/{size},/0/bitonal.jpg"  # default.jpg, gray.jpg. Can I get ImageMagick or PIL to work on the monochrome a bit better? Stippling
+
+# Get results
+print(
+    f"{resultSize} total results across {pages} pages, limited to {len(art['data'])}:"
+)
 for i in range(len(art["data"])):
     imageId = art["data"][i]["image_id"]
     print(f"{art['data'][i]['title']}, {art['data'][i]['id']}:")

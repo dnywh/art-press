@@ -2,7 +2,7 @@ import requests
 import math
 
 itemsPerPage = 10
-limit = 9
+limit = 90
 
 fields = "id,image_id,title,artist_id,medium_display"
 url = f"https://api.artic.edu/api/v1/artworks/search?limit={limit}&fields={fields}"
@@ -13,14 +13,25 @@ searchQuery = {
         "bool": {
             "must": [
                 {"term": {"is_public_domain": True}},
-                {"range": {"color.s": {"lt": 1}}},
+                {"match": {"term_titles": "woodcut"}},
+                # {"match": {"classification_titles": "etching"}},
+                # {"match": {"subject_titles": "geometric"}},
+                # {"range": {"color.h": {"lt": 2}}},
             ],
             "should": [
                 {"term": {"is_boosted": True}},
             ],
+            # "must_not": [
+            #     {"match": {"medium_display": "Ceramic and pigment"}},
+            #     {"match": {"medium_display": "Plant fibers"}},
+            #     {"match": {"term_titles": "metalwork"}},
+            # ],
         }
     }
 }
+
+# term_titles: "woodcut"
+# classification_titles: "etching"
 
 # searchQuery = {
 #     "query": {
@@ -70,8 +81,8 @@ resultSize = art["pagination"]["total"]
 pages = int(math.ceil(resultSize / 10))
 
 imageParams = "/full/843,/0/default.jpg"
-# print(resultSize, pages, art)
+print("Total results:", resultSize, "Limited to:", len(art["data"]))
 for i in range(len(art["data"])):
     imageId = art["data"][i]["image_id"]
-    print(art["data"][i]["title"], art["data"][i]["id"])
+    print(f"{art['data'][i]['title']}, {art['data'][i]['id']}:")
     print(f"https://www.artic.edu/iiif/2/{imageId}{imageParams}")

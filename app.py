@@ -4,7 +4,7 @@ import math
 itemsPerPage = 10
 limit = 9
 
-fields = "id,image_id,title,artist_id"
+fields = "id,image_id,title,artist_id,medium_display"
 url = f"https://api.artic.edu/api/v1/artworks/search?limit={limit}&fields={fields}"
 headers = {"user-agent": "test-app/endless.paces-03@icloud.com"}
 
@@ -12,9 +12,8 @@ searchQuery = {
     "query": {
         "bool": {
             "must": [
-                {"term": {"artist_id": 36198}},
-                {"term": {"is_public_domain": False}},
-                {"match": {"place_of_origin": "Spain"}},
+                {"term": {"is_public_domain": True}},
+                {"range": {"color.s": {"lt": 1}}},
             ],
             "should": [
                 {"term": {"is_boosted": True}},
@@ -22,6 +21,21 @@ searchQuery = {
         }
     }
 }
+
+# searchQuery = {
+#     "query": {
+#         "bool": {
+#             "must": [
+#                 {"term": {"artist_id": 36198}},
+#                 {"term": {"is_public_domain": True}},
+#                 {"match": {"place_of_origin": "Spain"}},
+#             ],
+#             "should": [
+#                 {"term": {"is_boosted": True}},
+#             ],
+#         }
+#     }
+# }
 
 # searchQuery = {
 #     "query": {

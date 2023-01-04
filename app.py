@@ -43,7 +43,7 @@ imageQuality = "bitonal"  # Options are "default", "gray", "bitonal"
 preferCrop = True  # Crop to center of original image if true
 imageWidth = 843  # Preferred width as per ARTIC API documentation
 exportImages = True  # Save both the input and output image in an exports folder
-headers = {"AIC-User-Agent": "art-box (endless.paces-03@icloud.com)"}  # As a courtesy
+headers = {"AIC-User-Agent": "Art Press (endless.paces-03@icloud.com)"}  # As a courtesy
 pageItemLimit = 10  # 100 or less per page
 
 criteria = {

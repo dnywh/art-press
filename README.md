@@ -1,4 +1,4 @@
-# Art Box
+# Art Press
 
 Use your Pi and Waveshare ePaper/e-ink display to show a random image from the Art Institute of Chicago's collection.
 

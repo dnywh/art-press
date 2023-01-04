@@ -3,13 +3,11 @@ import sys
 import os
 import logging
 from datetime import datetime
-from PIL import Image, ImageDraw
-
-
-import requests
 import math
 import random
-import urllib.request  # For saving the artwork image
+
+from PIL import Image, ImageDraw
+import requests  # For retrieving artwork data and image
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -27,17 +25,25 @@ if os.path.exists(libDir):
 from waveshare_epd import epd5in83_V2 as display
 
 # Adjust your optical offsets from one place
-import layout
+# import layout
+# See Pi Frame for usage:
+# https://github.com/dnywh/pi-frame
 
-# Set design basics
-containerSize = layout.size
-offsetX = layout.offsetX
-offsetY = layout.offsetY
+# Settings
+# Shared optical sizing and offsets with Pi Frame
+# containerSize = layout.size
+# offsetX = layout.offsetX
+# offsetY = layout.offsetY
+# Manual optical sizing and offsets
+containerSize = 360
+offsetX = 0
+offsetY = 16
+
 imageQuality = "bitonal"  # Options are "default", "gray", "bitonal"
 preferCrop = True  # Crop to center of original image if true
 imageWidth = 843  # Preferred width as per ARTIC API documentation
 exportImages = True  # Save both the input and output image in an exports folder
-header = {"AIC-User-Agent": "art-box (endless.paces-03@icloud.com)"}  # As a courtesy
+headers = {"AIC-User-Agent": "art-box (endless.paces-03@icloud.com)"}  # As a courtesy
 pageItemLimit = 10  # 100 or less per page
 
 criteria = {
@@ -70,7 +76,7 @@ try:
     logging.info(f"Kicking off at {timeStampNice}")
     # Post a bare minimum query to find out the amount of pages the criteria returns
     url = f"https://api.artic.edu/api/v1/artworks/search?limit=0"
-    r = requests.post(url, headers=header, json=criteria)
+    r = requests.post(url, headers=headers, json=criteria)
     art = r.json()
     # Get results
     resultSize = art["pagination"]["total"]
@@ -84,7 +90,7 @@ try:
     # Fields to include in data
     fields = "api_link,image_id,title,artist_id,artist_title,medium_display,thumbnail"  # Make sure to include any fields that are queried later on
     url = f"https://api.artic.edu/api/v1/artworks/search?limit={pageItemLimit}&page={randomPage}&fields={fields}"
-    r = requests.post(url, headers=header, json=criteria)
+    r = requests.post(url, headers=headers, json=criteria)
     art = r.json()
     # Select a random item
     randomArt = random.randint(0, pageItemLimit - 1)
@@ -116,14 +122,12 @@ try:
 
     logging.info(f"Artwork URL: {artworkUrl}")
 
-    timeStampSlugToMin = datetime.today().strftime("%Y-%m-%d-%H-%M")
-
-    # Download a temporary copy of the artwork to render to screen. Store it locally
+    # Download a temporary copy of the map tile from the API to render to screen
+    r = requests.get(artworkUrl, headers=headers)
+    # Store it locally
     artworkImagePath = os.path.join(appDir, "artwork.jpg")
-    urllib.request.urlretrieve(
-        artworkUrl,
-        artworkImagePath,
-    )
+    with open(artworkImagePath, "wb") as f:
+        f.write(r.content)
 
     # Prepare versions of image
     artwork = Image.open(artworkImagePath)
@@ -139,6 +143,7 @@ try:
     if exportImages == True:
         # Prepare directory for saving image(s)
         exportsDir = os.path.join(appDir, "exports")
+        timeStampSlugToMin = datetime.today().strftime("%Y-%m-%d-%H-%M")
         imageDir = os.path.join(exportsDir, timeStampSlugToMin)
         if not os.path.exists(exportsDir):
             os.makedirs(exportsDir)

@@ -2,7 +2,7 @@
 
 ![Art Press Sequence.gif](https://res.cloudinary.com/dannywhite/image/upload/v1672986899/github/art-press-sequence.gif)
 
-Art Press is a [Pi Frame](https://github.com/dnywh/pi-frame) app. It prints a random item from the Art Institute of Chicago’s collection to an e-ink display via Raspberry Pi. By default it selects only items classified as “woodcut” to suit the qualities (and limitations) of e-ink.
+Art Press is a [Pi Frame](https://github.com/dnywh/pi-frame) app. It prints a random, public domain, item from the Art Institute of Chicago’s collection to an e-ink display via Raspberry Pi. By default it selects only items classified as “woodcut” to suit the qualities (and limitations) of e-ink.
 
 Art Press relies on the [Art Institute of Chicago’s API](http://api.artic.edu/docs/) to search for random art and its [IIIF Image API](http://api.artic.edu/docs/#iiif-image-api) to render a cropped image.
 

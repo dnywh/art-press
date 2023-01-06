@@ -22,7 +22,7 @@ if os.path.exists(libDir):
     sys.path.append(libDir)
 
 # Change the below import to match your display's driver
-from waveshare_epd import epd5in83_V2 as display
+from waveshare_epd import epd7in5_V2 as display
 
 # Adjust your optical offsets from one place
 # import layout
@@ -31,18 +31,20 @@ from waveshare_epd import epd5in83_V2 as display
 
 # Settings
 # Shared optical sizing and offsets with Pi Frame
-# containerSize = layout.size
+# maskSize = layout.size
 # offsetX = layout.offsetX
 # offsetY = layout.offsetY
 # Manual optical sizing and offsets
-containerSize = 360
+maskWidth = 740
+maskHeight = 450
+# maskSize = 420
 offsetX = 0
-offsetY = 16
+offsetY = 12
 
 imageQuality = "bitonal"  # Options are "default", "gray", "bitonal"
 preferCrop = True  # Crop to center of original image if true
 imageWidth = 843  # Preferred width as per ARTIC API documentation
-exportImages = True  # Save both the input and output image in an exports folder
+exportImages = False  # Save both the input and output image in an exports folder
 headers = {"AIC-User-Agent": "Art Press (endless.paces-03@icloud.com)"}  # As a courtesy
 pageItemLimit = 10  # 100 or less per page
 
@@ -106,14 +108,14 @@ try:
         # Calculate center crop of image
         imageWidth = art["data"][randomArt]["thumbnail"]["width"]
         imageHeight = art["data"][randomArt]["thumbnail"]["height"]
-        cropStartX = int((imageWidth - containerSize) / 2)
-        cropStartY = int((imageHeight - containerSize) / 2)
+        cropStartX = int((imageWidth - maskWidth) / 2)
+        cropStartY = int((imageHeight - maskHeight) / 2)
         # Pass this crop region into the image parameters
-        cropRegion = f"{cropStartX},{cropStartY},{containerSize},{containerSize}"
-        imageParams = f"/{cropRegion}/{containerSize},/0/{imageQuality}.jpg"
+        cropRegion = f"{cropStartX},{cropStartY},{maskWidth},{maskHeight}"
+        imageParams = f"/{cropRegion}/{maskWidth},/0/{imageQuality}.jpg"
     else:
         # Just get the square version of the image, resized to canvas size
-        imageParams = f"/square/{containerSize},/0/{imageQuality}.jpg"
+        imageParams = f"/square/{maskWidth},/0/{imageQuality}.jpg"
 
     artworkUrl = f"https://www.artic.edu/iiif/2/{imageId}{imageParams}"
     canonicalArtworkUrl = (
@@ -164,8 +166,8 @@ try:
     draw = ImageDraw.Draw(canvas)
 
     # Calculate top-left starting position
-    startX = offsetX + int((epd.width - containerSize) / 2)
-    startY = offsetY + int((epd.height - containerSize) / 2)
+    startX = offsetX + int((epd.width - maskWidth) / 2)
+    startY = offsetY + int((epd.height - maskHeight) / 2)
 
     canvas.paste(artwork, (startX, startY))
 

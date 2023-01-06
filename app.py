@@ -30,6 +30,10 @@ from waveshare_epd import epd7in5_V2 as display
 # https://github.com/dnywh/pi-frame
 
 # Settings
+headers = {"AIC-User-Agent": "Art Press (endless.paces-03@icloud.com)"}  # As a courtesy
+pageItemLimit = 10  # 100 or less per page
+
+# Design options
 # Shared optical sizing and offsets with Pi Frame
 # maskSize = layout.size
 # offsetX = layout.offsetX
@@ -44,9 +48,9 @@ offsetY = 12
 imageQuality = "bitonal"  # Options are "default", "gray", "bitonal"
 preferCrop = True  # Crop to center of original image if true
 imageWidth = 843  # Preferred width as per ARTIC API documentation
+
+# Other
 exportImages = False  # Save both the input and output image in an exports folder
-headers = {"AIC-User-Agent": "Art Press (endless.paces-03@icloud.com)"}  # As a courtesy
-pageItemLimit = 10  # 100 or less per page
 
 criteria = {
     "query": {
